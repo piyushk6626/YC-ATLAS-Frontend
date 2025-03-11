@@ -5,12 +5,8 @@ import { Company } from '@/types/company';
 // This is a client-side adaptation of your Node.js code
 
 // These would normally be environment variables on the server
-const getApiKeys = () => {
-  return {
-    PINECONE_API_KEY: localStorage.getItem('PINECONE_API_KEY') || '',
-    OPENAI_API_KEY: localStorage.getItem('OPENAI_API_KEY') || ''
-  };
-};
+const PINECONE_API_KEY = 'pinecone-api-key';
+const OPENAI_API_KEY = 'openai-api-key';
 
 // System prompts
 const SystemPrompt = `Write a concise description to help the user find a company based on their query. Ensure the description incorporates the following points:
@@ -31,15 +27,10 @@ export const searchCompanies = async (query: string): Promise<Company[]> => {
     return [];
   }
 
-  const { PINECONE_API_KEY, OPENAI_API_KEY } = getApiKeys();
-  
-  // Check if API keys are available
-  if (!PINECONE_API_KEY || !OPENAI_API_KEY) {
-    throw new Error('API keys are not set. Please configure them in Settings.');
-  }
-
   console.log('Searching for companies with query:', query);
-  console.log('Using Pinecone and OpenAI for vector search and embeddings');
+  console.log('In a real implementation, this would use:');
+  console.log('- Pinecone for vector search');
+  console.log('- OpenAI for embeddings and query explanation');
   
   // Simulate processing time for API call
   await new Promise(resolve => setTimeout(resolve, 1500));
@@ -99,15 +90,12 @@ export const deepSearchCompanies = async (query: string): Promise<Company[]> => 
     return [];
   }
 
-  const { PINECONE_API_KEY, OPENAI_API_KEY } = getApiKeys();
-  
-  // Check if API keys are available
-  if (!PINECONE_API_KEY || !OPENAI_API_KEY) {
-    throw new Error('API keys are not set. Please configure them in Settings.');
-  }
-
   console.log('Deep searching for companies with query:', query);
-  console.log('Using Pinecone and OpenAI for deep search');
+  console.log('In a real implementation, this would:');
+  console.log('1. Generate multiple related questions using OpenAI');
+  console.log('2. Search for each question in parallel using Pinecone');
+  console.log('3. Combine and deduplicate results, adding scores for duplicates');
+  console.log('4. Sort by final score');
   
   // Simulate longer processing time for deep search
   await new Promise(resolve => setTimeout(resolve, 3000));
