@@ -5,8 +5,8 @@ import { Company } from '@/types/company';
 // This is a client-side adaptation of your Node.js code
 
 // These would normally be environment variables on the server
-const PINECONE_API_KEY = 'your-pinecone-api-key';
-const OPENAI_API_KEY = 'your-openai-api-key';
+const PINECONE_API_KEY = 'pinecone-api-key';
+const OPENAI_API_KEY = 'openai-api-key';
 
 // System prompts
 const SystemPrompt = `Write a concise description to help the user find a company based on their query. Ensure the description incorporates the following points:
