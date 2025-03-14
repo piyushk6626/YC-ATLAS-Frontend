@@ -1,29 +1,34 @@
+// src/types/company.ts
+
+export interface CompanyMetadata {
+  name: string;
+  headline: string;
+  batch?: string;
+  founded_date?: number;
+  team_size?: number;
+  location?: string;
+  website?: string;
+  description?: string;
+  logo_path?: string;
+  links?: string;
+  tags?: string;
+  generated_description?: string;
+  social_links?: string[];
+}
 
 export interface Company {
   id: string;
-  score: number;
-  metadata: {
-    batch: string;
-    founded_date: number;
-    generated_description: string;
-    headline: string;
-    links: string;
-    location: string;
-    logo_path: string;
-    name: string;
-    social_links: string;
-    tags: string;
-    team_size: number;
-    website: string;
-  };
+  metadata: CompanyMetadata;
+  content?: string;
+  score?: number;
 }
 
-export interface CompanyDetails extends Omit<Company['metadata'], 'social_links'> {
+export interface Founder {
+  name: string;
   description: string;
-  founders: Array<{
-    name: string;
-    description: string;
-    linkedin: string;
-  }>;
-  social_links: string[];
+  linkedin?: string;
+}
+
+export interface CompanyDetails extends CompanyMetadata {
+  founders?: Founder[];
 }

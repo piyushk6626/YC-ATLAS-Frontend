@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink, Linkedin, Twitter, Github } from "lucide-react";
 import { CompanyDetails as CompanyDetailsType } from '@/types/company';
 import { useToast } from "@/components/ui/use-toast";
+import { getCompanyDetails } from '@/services/companyService';
 
 const CompanyDetailsPage = () => {
   const { id } = useParams();
@@ -15,50 +15,12 @@ const CompanyDetailsPage = () => {
 
   useEffect(() => {
     const fetchCompanyDetails = async () => {
+      if (!id) return;
+      
       try {
         setLoading(true);
-        
-        // In a real application, you would fetch data from your API
-        // const response = await fetch(`/api/companies/${id}`);
-        // const data = await response.json();
-        
-        // Simulate API call with timeout
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Example data for demonstration
-        const exampleData: CompanyDetailsType = {
-          name: "SciPhi",
-          headline: "SciPhi is building R2R, the most advanced retrieval system.",
-          batch: "W24",
-          founded_date: 2023,
-          team_size: 2,
-          location: "San Francisco",
-          website: "https://www.sciphi.ai",
-          description: "**SciPhi: Pioneering Advanced AI Retrieval**\n\nWelcome to SciPhi, a fresh face in the vibrant tech scene, founded in 2023 and already making waves as part of Y Combinator Batch W24. Situated in San Francisco and comprised of just two sharp minds, SciPhi is on a mission to redefine how we interact with data and AI through its groundbreaking retrieval system, known as R2R.\n\n### What's the Buzz About?\n\nSciPhi emerged with a clear focus: to create the most advanced Retrieval-Augmented Generation (RAG) system on the market. This isn't just tech jargon; R2R is designed to bridge the gap from RAG prototypes to robust production environments. By tackling challenges related to infrastructure, retrieval speed, and scalability, they aim to empower enterprises to build reliable, context-aware AI applications.",
-          logo_path: "/placeholder.svg",
-          links: "https://www.ycombinator.com/companies/sciphi",
-          tags: "industry:artificial-intelligence; industry:search; industry:infrastructure; industry:ai; location:san-francisco-bay-area",
-          generated_description: "SciPhi is a pioneering company in the advanced AI retrieval space, building R2R, the most advanced retrieval system on the market.",
-          social_links: [
-            "https://www.linkedin.com/company/sciphi-ai/",
-            "https://github.com/SciPhi-AI"
-          ],
-          founders: [
-            {
-              name: "John Doe",
-              description: "AI researcher and entrepreneur with a passion for retrieval systems",
-              linkedin: "https://www.linkedin.com/in/johndoe/"
-            },
-            {
-              name: "Jane Smith",
-              description: "Machine learning expert specializing in large language models",
-              linkedin: "https://www.linkedin.com/in/janesmith/"
-            }
-          ]
-        };
-        
-        setCompany(exampleData);
-        
+        const data = await getCompanyDetails(id);
+        setCompany(data);
       } catch (error) {
         console.error('Error fetching company details:', error);
         toast({
@@ -71,9 +33,7 @@ const CompanyDetailsPage = () => {
       }
     };
 
-    if (id) {
-      fetchCompanyDetails();
-    }
+    fetchCompanyDetails();
   }, [id, toast]);
 
   if (loading) {
@@ -115,7 +75,7 @@ const CompanyDetailsPage = () => {
         <Link to="/">
           <Button variant="outline" size="sm">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Search
+            Back to Home
           </Button>
         </Link>
       </div>
@@ -123,9 +83,22 @@ const CompanyDetailsPage = () => {
       <Card className="max-w-4xl mx-auto">
         <CardHeader className="border-b">
           <div className="flex items-start justify-between">
-            <div>
-              <CardTitle className="text-3xl font-bold">{company.name}</CardTitle>
-              <CardDescription className="text-lg mt-1">{company.headline}</CardDescription>
+            <div className="flex items-center">
+              {company.logo_path && (
+                <img 
+                  src={company.logo_path} 
+                  alt={`${company.name} logo`}
+                  className="w-16 h-16 object-contain mr-4 rounded-md"
+                  onError={(e) => {
+                    // Fallback if logo fails to load
+                    (e.target as HTMLImageElement).src = '/placeholder.svg';
+                  }}
+                />
+              )}
+              <div>
+                <CardTitle className="text-3xl font-bold">{company.name}</CardTitle>
+                <CardDescription className="text-lg mt-1">{company.headline}</CardDescription>
+              </div>
             </div>
             {company.website && (
               <a 
@@ -157,6 +130,13 @@ const CompanyDetailsPage = () => {
             </div>
           </div>
           
+          {company.batch && (
+            <div>
+              <h3 className="font-semibold text-gray-500">YC Batch</h3>
+              <p>{company.batch}</p>
+            </div>
+          )}
+          
           {tags && tags.length > 0 && (
             <div>
               <h3 className="font-semibold mb-2">Tags</h3>
@@ -176,7 +156,7 @@ const CompanyDetailsPage = () => {
           <div>
             <h2 className="text-xl font-semibold mb-3">Description</h2>
             <div className="prose max-w-none">
-              {company.description.split('\n\n').map((paragraph, index) => (
+              {company.description?.split('\n\n').map((paragraph, index) => (
                 <p key={index} className="mb-4">{paragraph}</p>
               ))}
             </div>
