@@ -6,7 +6,7 @@ export const getCompanyDetails = async (id: string): Promise<CompanyDetails> => 
     // Attempt to load the company data from the local file
     // Using dynamic import to load the JSON file based on the ID
     try {
-      const companyData = await import(`../data/${id}.json`);
+      const companyData = await import(`../data/Company/${id}.json`);
       return companyData.default as CompanyDetails;
     } catch (localError) {
       console.error('Could not load local company data:', localError);

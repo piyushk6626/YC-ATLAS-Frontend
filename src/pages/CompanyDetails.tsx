@@ -86,14 +86,15 @@ const CompanyDetailsPage = () => {
             <div className="flex items-center">
               {company.logo_path && (
                 <img 
-                  src={company.logo_path} 
-                  alt={`${company.name} logo`}
-                  className="w-16 h-16 object-contain mr-4 rounded-md"
-                  onError={(e) => {
-                    // Fallback if logo fails to load
-                    (e.target as HTMLImageElement).src = '/placeholder.svg';
-                  }}
-                />
+                src={`/data/logos/${company.name.replace(' ', '_')}_${company.batch}.png`} 
+                alt={`${company.name} logo`}
+                className="w-16 h-16 object-contain mr-4 rounded-md"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/placeholder.svg';
+                }}
+              />
+              
+              
               )}
               <div>
                 <CardTitle className="text-3xl font-bold">{company.name}</CardTitle>
@@ -156,7 +157,7 @@ const CompanyDetailsPage = () => {
           <div>
             <h2 className="text-xl font-semibold mb-3">Description</h2>
             <div className="prose max-w-none">
-              {company.description?.split('\n\n').map((paragraph, index) => (
+              {company.generated_description?.split('\n\n').map((paragraph, index) => (
                 <p key={index} className="mb-4">{paragraph}</p>
               ))}
             </div>
