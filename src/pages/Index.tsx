@@ -2,37 +2,62 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Search, Star, TrendingUp, Users, Github, Linkedin, Globe } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const Index = () => {
+  const [gradientPosition, setGradientPosition] = useState(0);
+
+  // Create a subtle animation for the gradient background
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGradientPosition((prev) => (prev >= 100 ? 0 : prev + 0.3));
+    }, 50);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  const heroGradientStyle = {
+    background: `linear-gradient(${gradientPosition}deg, #f46424 0%, #ff8c54 25%, #ff9e6d 50%, #ffa77a 75%, #ffb088 100%)`,
+    backgroundSize: '400% 400%',
+    animation: 'gradient 15s ease infinite',
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      {/* Hero Section */}
-      <div className="container mx-auto px-4 pt-20 pb-16">
-        <div className="text-center max-w-3xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#f46424] to-[#ff8c54]">
-            YC ATLAS
-          </h1>
-          <p className="text-xl text-gray-600 mb-10 leading-relaxed">
-            Your comprehensive explorer for Y Combinator startups. Discover, research, and connect with 
-            the most innovative companies shaping the future.
-          </p>
-          
-          <Link to="/search">
-            <Button size="lg" className="mx-auto bg-[#f46424] hover:bg-[#e05a1c] text-white rounded-full px-8 py-6 h-auto transition-all transform hover:scale-105">
-              <Search className="mr-2 h-5 w-5" />
-              Explore Companies
-            </Button>
-          </Link>
+      {/* Hero Section with Animated Gradient */}
+      <div 
+        className="relative overflow-hidden pt-20 pb-16"
+        style={heroGradientStyle}
+      >
+        <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22 viewBox=%220 0 32 32%22%3E%3Cpath fill=%22%23fff%22 d=%22M0 4h4v4H0V4zm8 0h4v4H8V4zm8 0h4v4h-4V4zm8 0h4v4h-4V4zM4 8h4v4H4V8zm8 0h4v4h-4V8zm8 0h4v4h-4V8zM0 12h4v4H0v-4zm16 0h4v4h-4v-4zm8 0h4v4h-4v-4zM4 16h4v4H4v-4zm8 0h4v4h-4v-4zm8 0h4v4h-4v-4zm8 0h4v4h-4v-4zM0 20h4v4H0v-4zm8 0h4v4H8v-4zm8 0h4v4h-4v-4zm8 0h4v4h-4v-4zM4 24h4v4H4v-4zm8 0h4v4h-4v-4zm8 0h4v4h-4v-4z%22/%3E%3C/svg%3E')]"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center max-w-3xl mx-auto">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
+              YC ATLAS
+            </h1>
+            <p className="text-xl text-white/90 mb-10 leading-relaxed">
+              Your comprehensive explorer for Y Combinator startups. Discover, research, and connect with 
+              the most innovative companies shaping the future.
+            </p>
+            
+            <Link to="/search">
+              <Button size="lg" className="mx-auto bg-white hover:bg-white/90 text-[#f46424] rounded-full px-8 py-6 h-auto transition-all transform hover:scale-105 shadow-lg">
+                <Search className="mr-2 h-5 w-5" />
+                Explore Companies
+              </Button>
+            </Link>
 
-          <div className="mt-16 flex flex-wrap justify-center gap-4">
-            <div className="inline-flex items-center px-4 py-2 bg-gray-100 rounded-full text-sm text-gray-600">
-              <Star className="w-4 h-4 mr-2 text-[#f46424]" /> 4000+ Companies
-            </div>
-            <div className="inline-flex items-center px-4 py-2 bg-gray-100 rounded-full text-sm text-gray-600">
-              <TrendingUp className="w-4 h-4 mr-2 text-[#f46424]" /> Real-time Updates
-            </div>
-            <div className="inline-flex items-center px-4 py-2 bg-gray-100 rounded-full text-sm text-gray-600">
-              <Users className="w-4 h-4 mr-2 text-[#f46424]" /> Founder Information
+            <div className="mt-16 flex flex-wrap justify-center gap-4">
+              <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm text-white/90">
+                <Star className="w-4 h-4 mr-2 text-white" /> 4000+ Companies
+              </div>
+              <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm text-white/90">
+                <TrendingUp className="w-4 h-4 mr-2 text-white" /> Real-time Updates
+              </div>
+              <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm text-white/90">
+                <Users className="w-4 h-4 mr-2 text-white" /> Founder Information
+              </div>
             </div>
           </div>
         </div>
