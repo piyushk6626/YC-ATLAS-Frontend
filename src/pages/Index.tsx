@@ -34,7 +34,7 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
-              YC tals
+              YC ATLAS
             </h1>
             <p className="text-xl text-white/90 mb-10 leading-relaxed">
               Your comprehensive explorer for Y Combinator startups. Discover, research, and connect with 
@@ -56,7 +56,7 @@ const Index = () => {
                 <TrendingUp className="w-4 h-4 mr-2 text-white" /> Real-time Updates
               </div>
               <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm text-white/90">
-                <Users className="w-4 h-4 mr-2 text-white" /> Founder Information
+                <Users className="w-4 h-4 mr-2 text-white" /> Company Information
               </div>
             </div>
           </div>
@@ -80,16 +80,16 @@ const Index = () => {
             <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
               <TrendingUp className="h-6 w-6 text-[#f46424]" />
             </div>
-            <h3 className="font-bold text-xl mb-3">Deep Analytics</h3>
-            <p className="text-gray-600">Explore detailed metrics and analysis across company descriptions and performance.</p>
+            <h3 className="font-bold text-xl mb-3">Deep Search</h3>
+            <p className="text-gray-600">Best Search results by deploying multiple Quick Search queries and then integrating their results.</p>
           </div>
           
           <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 transform transition-transform hover:scale-105 hover:shadow-md">
             <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
               <Users className="h-6 w-6 text-[#f46424]" />
-            </div>
-            <h3 className="font-bold text-xl mb-3">Founder Insights</h3>
-            <p className="text-gray-600">Get comprehensive information about founders, their background, and previous ventures.</p>
+            </div>  
+            <h3 className="font-bold text-xl mb-3">Company Insights</h3>
+            <p className="text-gray-600">Gain in-depth knowledge about companies, including their mission, funding, and team.</p>
           </div>
         </div>
       </div>
@@ -99,7 +99,7 @@ const Index = () => {
         <div className="bg-white rounded-2xl p-10 text-center shadow-sm border border-gray-100">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">Open Source Project</h2>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-            YC tals is open source and available on GitHub. Feel free to contribute, report issues, or fork the repository.
+            YC ATLAS is open source and available on GitHub. Feel free to contribute, report issues, or fork the repository.
           </p>
           <div className="flex flex-col md:flex-row justify-center gap-4 mb-6">
             <a href="https://github.com/piyushk6626/yc-atlas" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors">
@@ -145,7 +145,7 @@ const Index = () => {
             </div>
           </div>
           <p className="text-center text-gray-500 text-sm">
-            © {new Date().getFullYear()} YC tals. All rights reserved.
+            © {new Date().getFullYear()}  YC ATLAS. All rights reserved.
           </p>
         </div>
       </footer>
