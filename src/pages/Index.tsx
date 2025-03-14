@@ -34,7 +34,7 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
-              YC ATLAS
+              YC tals
             </h1>
             <p className="text-xl text-white/90 mb-10 leading-relaxed">
               Your comprehensive explorer for Y Combinator startups. Discover, research, and connect with 
@@ -99,7 +99,7 @@ const Index = () => {
         <div className="bg-white rounded-2xl p-10 text-center shadow-sm border border-gray-100">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">Open Source Project</h2>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-            YC Atlas is open source and available on GitHub. Feel free to contribute, report issues, or fork the repository.
+            YC tals is open source and available on GitHub. Feel free to contribute, report issues, or fork the repository.
           </p>
           <div className="flex flex-col md:flex-row justify-center gap-4 mb-6">
             <a href="https://github.com/piyushk6626/yc-atlas" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors">
@@ -145,7 +145,7 @@ const Index = () => {
             </div>
           </div>
           <p className="text-center text-gray-500 text-sm">
-            © {new Date().getFullYear()} YC Atlas. All rights reserved.
+            © {new Date().getFullYear()} YC tals. All rights reserved.
           </p>
         </div>
       </footer>
