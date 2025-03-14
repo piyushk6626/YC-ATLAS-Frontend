@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Search, Star, TrendingUp, Users } from "lucide-react";
+import { Search, Star, TrendingUp, Users, Github, Linkedin, Globe } from "lucide-react";
 
 const Index = () => {
   return (
@@ -69,6 +69,24 @@ const Index = () => {
         </div>
       </div>
       
+      {/* GitHub Repo Section */}
+      <div className="container mx-auto px-4 py-10">
+        <div className="bg-white rounded-2xl p-10 text-center shadow-sm border border-gray-100">
+          <h2 className="text-3xl font-bold text-gray-800 mb-6">Open Source Project</h2>
+          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+            YC Atlas is open source and available on GitHub. Feel free to contribute, report issues, or fork the repository.
+          </p>
+          <div className="flex flex-col md:flex-row justify-center gap-4 mb-6">
+            <a href="https://github.com/piyushk6626/yc-atlas" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors">
+              <Github className="w-5 h-5 mr-2" /> Frontend Repository
+            </a>
+            <a href="https://github.com/piyushk6626/YCAtlas" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors">
+              <Github className="w-5 h-5 mr-2" /> Backend Repository
+            </a>
+          </div>
+        </div>
+      </div>
+      
       {/* CTA Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="bg-gradient-to-r from-[#f46424] to-[#ff8c54] rounded-2xl p-10 text-center">
@@ -83,6 +101,29 @@ const Index = () => {
           </Link>
         </div>
       </div>
+      
+      {/* Footer with Contact Information */}
+      <footer className="bg-gray-50 py-10 border-t border-gray-200">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-6">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">Created by Piyush Kulkarni</h3>
+            <div className="flex justify-center space-x-6">
+              <a href="https://www.linkedin.com/in/piyush-kulkarni-ai/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#f46424] transition-colors flex items-center">
+                <Linkedin className="w-5 h-5 mr-2" /> LinkedIn
+              </a>
+              <a href="https://github.com/piyushk6626" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#f46424] transition-colors flex items-center">
+                <Github className="w-5 h-5 mr-2" /> GitHub
+              </a>
+              <a href="https://codefatherai.webflow.io/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#f46424] transition-colors flex items-center">
+                <Globe className="w-5 h-5 mr-2" /> Portfolio
+              </a>
+            </div>
+          </div>
+          <p className="text-center text-gray-500 text-sm">
+            © {new Date().getFullYear()} YC Atlas. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
