@@ -6,6 +6,7 @@ import { ArrowLeft, ExternalLink, Linkedin, Twitter, Github } from "lucide-react
 import { CompanyDetails as CompanyDetailsType } from '@/types/company';
 import { useToast } from "@/components/ui/use-toast";
 import { getCompanyDetails } from '@/services/companyService';
+import ReactMarkdown from 'react-markdown'; // Import ReactMarkdown for rendering markdown
 
 const CompanyDetailsPage = () => {
   const { id } = useParams();
@@ -69,6 +70,10 @@ const CompanyDetailsPage = () => {
   // Parse tags into a more readable format
   const tags = company.tags?.split(';').map(tag => tag.trim().split(':')[1] || tag.trim());
 
+  // Create logo path based on the example provided
+  const logoPath = company.logo_path ? `/${company.logo_path.replace('\\', '/')}` : null;
+  const fallbackLogoPath = '/placeholder.png';
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
@@ -84,18 +89,14 @@ const CompanyDetailsPage = () => {
         <CardHeader className="border-b">
           <div className="flex items-start justify-between">
             <div className="flex items-center">
-              {company.logo_path && (
-                <img 
-                src={`/data/logos/${company.name.replace(' ', '_')}_${company.batch}.png`} 
+              <img 
+                src={logoPath || fallbackLogoPath} 
                 alt={`${company.name} logo`}
                 className="w-16 h-16 object-contain mr-4 rounded-md"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/placeholder.svg';
+                  (e.target as HTMLImageElement).src = fallbackLogoPath;
                 }}
               />
-              
-              
-              )}
               <div>
                 <CardTitle className="text-3xl font-bold">{company.name}</CardTitle>
                 <CardDescription className="text-lg mt-1">{company.headline}</CardDescription>
@@ -157,9 +158,9 @@ const CompanyDetailsPage = () => {
           <div>
             <h2 className="text-xl font-semibold mb-3">Description</h2>
             <div className="prose max-w-none">
-              {company.generated_description?.split('\n\n').map((paragraph, index) => (
-                <p key={index} className="mb-4">{paragraph}</p>
-              ))}
+              {company.generated_description && (
+                <ReactMarkdown>{company.generated_description}</ReactMarkdown>
+              )}
             </div>
           </div>
 
