@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +6,7 @@ import { ExternalLink } from "lucide-react";
 import { Company } from '@/types/company';
 import { useToast } from "@/components/ui/use-toast";
 import { searchCompanies, deepSearchCompanies } from '@/services/searchService';
+import { Link } from "react-router-dom";
 
 const Search = () => {
   const [query, setQuery] = useState('');
@@ -50,6 +50,17 @@ const Search = () => {
     }
   };
 
+  // Function to format company ID properly for the URL
+  // Replace hyphens with underscores
+  const formatCompanyIdForUrl = (id: string) => {
+    return id.replace(/-/g, '_');
+  };
+
+  // Function to get company logo path
+  const getLogoPath = (company: Company): string => {
+    const formattedName = company.metadata.name.replace(/\s+/g, '_');
+    return `data\\logos\\${formattedName}_logo.png`;
+  };
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
@@ -89,27 +100,36 @@ const Search = () => {
         <div className="mt-8 space-y-4 max-h-[600px] overflow-y-auto rounded-lg p-1">
           {results.length > 0 ? (
             results.map((company) => (
-              <Card key={company.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-xl font-semibold">
-                    {company.metadata.name}
-                  </CardTitle>
-                  <a
-                    href={`/company/${company.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-700"
-                  >
-                    <ExternalLink className="h-5 w-5" />
-                  </a>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-500 mb-2">
-                    {company.metadata.location} • Founded {company.metadata.founded_date}
-                  </p>
-                  <p className="text-sm">{company.metadata.headline}</p>
-                </CardContent>
-              </Card>
+              <Link 
+                to={`/company/${formatCompanyIdForUrl(company.id)}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                key={company.id}
+                className="block"
+              >
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <div className="flex items-center">
+                      <img 
+                        src={getLogoPath(company)} 
+                        alt={`${company.metadata.name} logo`}
+                        className="w-10 h-10 object-contain mr-3 rounded-md"
+                        
+                      />
+                      <CardTitle className="text-xl font-semibold">
+                        {company.metadata.name}
+                      </CardTitle>
+                    </div>
+                    <ExternalLink className="h-5 w-5 text-blue-500" />
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-500 mb-2">
+                      {company.metadata.location} • Founded {company.metadata.founded_date}
+                    </p>
+                    <p className="text-sm">{company.metadata.headline}</p>
+                  </CardContent>
+                </Card>
+              </Link>
             ))
           ) : (
             <div className="text-center text-gray-500 py-8">
