@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Search, Star, TrendingUp, Users, Github, Linkedin, Globe } from "lucide-react";
@@ -10,7 +9,8 @@ const Index = () => {
   // Create a subtle animation for the gradient background
   useEffect(() => {
     const interval = setInterval(() => {
-      setGradientPosition((prev) => (prev >= 100 ? 0 : prev + 0.3));
+      // Increased speed by changing from 0.3 to 0.8
+      setGradientPosition((prev) => (prev >= 100 ? 0 : prev + 0.8));
     }, 50);
     
     return () => clearInterval(interval);
@@ -33,7 +33,8 @@ const Index = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
+            {/* Increased text size from text-5xl/text-6xl to text-6xl/text-7xl */}
+            <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
               YC ATLAS
             </h1>
             <p className="text-xl text-white/90 mb-10 leading-relaxed">
