@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 const Index = () => {
   const [gradientPosition, setGradientPosition] = useState(0);
+  const [titleVisible, setTitleVisible] = useState(false);
 
   // Create a subtle animation for the gradient background
   useEffect(() => {
@@ -14,6 +15,16 @@ const Index = () => {
     }, 50);
     
     return () => clearInterval(interval);
+  }, []);
+
+  // Add animation trigger for title when component mounts
+  useEffect(() => {
+    // Small delay to trigger animation after page load
+    const timer = setTimeout(() => {
+      setTitleVisible(true);
+    }, 300);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const heroGradientStyle = {
@@ -33,8 +44,14 @@ const Index = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
-            {/* Increased text size from text-5xl/text-6xl to text-6xl/text-7xl */}
-            <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
+            {/* Increased text size further (from 6xl/7xl to 7xl/8xl) and added animations */}
+            <h1 
+              className={`text-7xl md:text-8xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80 transition-all duration-700 ease-out transform ${
+                titleVisible 
+                  ? 'translate-y-0 opacity-100 scale-100' 
+                  : 'translate-y-10 opacity-0 scale-95'
+              }`}
+            >
               YC ATLAS
             </h1>
             <p className="text-xl text-white/90 mb-10 leading-relaxed">
@@ -140,7 +157,7 @@ const Index = () => {
               <a href="https://www.linkedin.com/in/piyush-kulkarni-ai/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#f46424] transition-colors flex items-center">
                 <Linkedin className="w-5 h-5 mr-2" /> LinkedIn
               </a>
-              <a href="https://github.com/piyushk6626" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#f46424] transition-colors flex items-center">
+              <a href="https://github.com/piyushk6626" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#f44624] transition-colors flex items-center">
                 <Github className="w-5 h-5 mr-2" /> GitHub
               </a>
               <a href="https://codefatherai.webflow.io/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#f46424] transition-colors flex items-center">
