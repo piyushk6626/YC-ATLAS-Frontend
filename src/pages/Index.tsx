@@ -1,62 +1,60 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Search, Star, TrendingUp, Users, Github, Linkedin, Globe } from "lucide-react";
-import { useEffect, useState } from "react";
 
 const Index = () => {
   const [gradientPosition, setGradientPosition] = useState(0);
+  const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
   const [titleVisible, setTitleVisible] = useState(false);
 
-  // Create a subtle animation for the gradient background
+  // Combined Gradient Animation Effect with bouncing direction
   useEffect(() => {
     const interval = setInterval(() => {
-      // Increased speed by changing from 0.3 to 0.8
-      setGradientPosition((prev) => (prev >= 100 ? 0 : prev + 0.8));
-    }, 50);
-    
-    return () => clearInterval(interval);
-  }, []);
+      setGradientPosition((prev) => {
+        let next = prev + 1.5 * direction;
+        // Reverse direction when reaching the bounds
+        if (next >= 100 || next <= 0) {
+          setDirection((d) => -d);
+          next = Math.max(0, Math.min(100, next));
+        }
+        return next;
+      });
+    }, 30); // Faster updates for smooth animation
 
-  // Add animation trigger for title when component mounts
+    return () => clearInterval(interval);
+  }, [direction]);
+
+  // Title Fade-in Effect
   useEffect(() => {
-    // Small delay to trigger animation after page load
-    const timer = setTimeout(() => {
-      setTitleVisible(true);
-    }, 300);
-    
-    return () => clearTimeout(timer);
+    const timeout = setTimeout(() => setTitleVisible(true), 500);
+    return () => clearTimeout(timeout);
   }, []);
 
   const heroGradientStyle = {
     background: `linear-gradient(${gradientPosition}deg, #f46424 0%, #ff8c54 25%, #ff9e6d 50%, #ffa77a 75%, #ffb088 100%)`,
-    backgroundSize: '400% 400%',
-    animation: 'gradient 15s ease infinite',
+    backgroundSize: "400% 400%",
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Hero Section with Animated Gradient */}
-      <div 
-        className="relative overflow-hidden pt-20 pb-16"
-        style={heroGradientStyle}
-      >
+      <div className="relative overflow-hidden pt-20 pb-16" style={heroGradientStyle}>
         <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22 viewBox=%220 0 32 32%22%3E%3Cpath fill=%22%23fff%22 d=%22M0 4h4v4H0V4zm8 0h4v4H8V4zm8 0h4v4h-4V4zm8 0h4v4h-4V4zM4 8h4v4H4V8zm8 0h4v4h-4V8zm8 0h4v4h-4V8zM0 12h4v4H0v-4zm16 0h4v4h-4v-4zm8 0h4v4h-4v-4zM4 16h4v4H4v-4zm8 0h4v4h-4v-4zm8 0h4v4h-4v-4zm8 0h4v4h-4v-4zM0 20h4v4H0v-4zm8 0h4v4H8v-4zm8 0h4v4h-4v-4zm8 0h4v4h-4v-4zM4 24h4v4H4v-4zm8 0h4v4h-4v-4zm8 0h4v4h-4v-4z%22/%3E%3C/svg%3E')]"></div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
-            {/* Increased text size further (from 6xl/7xl to 7xl/8xl) and added animations */}
-            <h1 
+            <h1
               className={`text-7xl md:text-8xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80 transition-all duration-700 ease-out transform ${
-                titleVisible 
-                  ? 'translate-y-0 opacity-100 scale-100' 
-                  : 'translate-y-10 opacity-0 scale-95'
+                titleVisible
+                  ? "translate-y-0 opacity-100 scale-100"
+                  : "translate-y-10 opacity-0 scale-95"
               }`}
             >
               YC ATLAS
             </h1>
             <p className="text-xl text-white/90 mb-10 leading-relaxed">
-              Your comprehensive explorer for Y Combinator startups. Discover, research, and connect with 
-              the most innovative companies shaping the future.
+              Your comprehensive explorer for Y Combinator startups. Discover, research, and connect with the most innovative companies shaping the future.
             </p>
             
             <Link to="/search">
@@ -99,13 +97,13 @@ const Index = () => {
               <TrendingUp className="h-6 w-6 text-[#f46424]" />
             </div>
             <h3 className="font-bold text-xl mb-3">Deep Search</h3>
-            <p className="text-gray-600">Best Search results by deploying multiple Quick Search queries and then integrating their results.</p>
+            <p className="text-gray-600">Best search results by deploying multiple quick search queries and then integrating their results.</p>
           </div>
           
           <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 transform transition-transform hover:scale-105 hover:shadow-md">
             <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
               <Users className="h-6 w-6 text-[#f46424]" />
-            </div>  
+            </div>
             <h3 className="font-bold text-xl mb-3">Company Insights</h3>
             <p className="text-gray-600">Gain in-depth knowledge about companies, including their mission, funding, and team.</p>
           </div>
@@ -120,13 +118,28 @@ const Index = () => {
             YC ATLAS is open source and available on GitHub. Feel free to contribute, report issues, or fork the repository.
           </p>
           <div className="flex flex-col md:flex-row justify-center gap-4 mb-6">
-            <a href="https://github.com/piyushk6626/yc-atlas" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors">
+            <a
+              href="https://github.com/piyushk6626/YC-ATLAS-Frontend"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors"
+            >
               <Github className="w-5 h-5 mr-2" /> Frontend Repository
             </a>
-            <a href="https://github.com/piyushk6626/YCAtlas" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors">
+            <a
+              href="https://github.com/piyushk6626/YC-ATLAS-Backend"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors"
+            >
               <Github className="w-5 h-5 mr-2" /> Backend Repository
             </a>
-            <a href="https://github.com/piyushk6626/YC-ATLAS-Scraping" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors">
+            <a
+              href="https://github.com/piyushk6626/YC-ATLAS-Scraping"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors"
+            >
               <Github className="w-5 h-5 mr-2" /> Data & Scraping Tool
             </a>
           </div>
@@ -154,19 +167,34 @@ const Index = () => {
           <div className="text-center mb-6">
             <h3 className="text-xl font-semibold text-gray-800 mb-4">Created by Piyush Kulkarni</h3>
             <div className="flex justify-center space-x-6">
-              <a href="https://www.linkedin.com/in/piyush-kulkarni-ai/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#f46424] transition-colors flex items-center">
+              <a
+                href="https://www.linkedin.com/in/piyush-kulkarni-ai/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 hover:text-[#f46424] transition-colors flex items-center"
+              >
                 <Linkedin className="w-5 h-5 mr-2" /> LinkedIn
               </a>
-              <a href="https://github.com/piyushk6626" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#f44624] transition-colors flex items-center">
+              <a
+                href="https://github.com/piyushk6626"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 hover:text-[#f44624] transition-colors flex items-center"
+              >
                 <Github className="w-5 h-5 mr-2" /> GitHub
               </a>
-              <a href="https://codefatherai.webflow.io/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#f46424] transition-colors flex items-center">
+              <a
+                href="https://codefatherai.webflow.io/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 hover:text-[#f46424] transition-colors flex items-center"
+              >
                 <Globe className="w-5 h-5 mr-2" /> Portfolio
               </a>
             </div>
           </div>
           <p className="text-center text-gray-500 text-sm">
-            © {new Date().getFullYear()}  YC ATLAS. All rights reserved.
+            © {new Date().getFullYear()} YC ATLAS. All rights reserved.
           </p>
         </div>
       </footer>
