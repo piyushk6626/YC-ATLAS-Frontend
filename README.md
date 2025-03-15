@@ -1,69 +1,180 @@
-# Welcome to your Lovable project
+# 🚀 YC ATLAS Frontend - AI-Powered YC Startup Search
 
-## Project info
+## 🔎 Explore YC Startups Instantly: [YC ATLAS](https://yc-atlas.lovable.app/)
 
-**URL**: https://lovable.dev/projects/79e701f7-7aa0-460c-8101-c89cf40f07f1
+Use **[YC ATLAS](https://yc-atlas.lovable.app/)** to **search, filter, and explore** Y Combinator startups with AI-powered insights. This intuitive frontend makes finding relevant YC companies faster and more efficient.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 📌 Overview
 
-**Use Lovable**
+YC ATLAS Frontend is the **React-based** user interface for **YC ATLAS** – an open-source deep research tool designed to help users discover **Y Combinator startups** by technology domains, mission statements, and business models.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/79e701f7-7aa0-460c-8101-c89cf40f07f1) and start prompting.
+### 🔥 Why Use YC ATLAS Frontend?
+✅ **AI-Powered Search** – Smart, contextual searches powered by LLMs.  
+✅ **Fast & Responsive UI** – Built with **React, TypeScript, and Tailwind CSS**.  
+✅ **Detailed YC Company Profiles** – See company insights, founders, and social links.  
+✅ **Advanced Search Modes** – Quick Search and Deep Research modes.  
+✅ **Mobile-Optimized** – Works seamlessly across all devices.  
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 🚀 Key Features
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 🔍 AI-Enhanced Search
+- **Quick Search** – Instantly find YC startups by name, industry, or location.
+- **Deep Research** – Multi-query search powered by LLMs for comprehensive results.
+- **Interactive Filters** – Refine searches by YC batch, domain, and more.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 🏢 Company Profiles
+- **In-Depth Insights** – Learn about YC startups, their founders, and business models.
+- **AI-Powered Summaries** – Auto-generated key takeaways for each company.
+- **Social Links** – Direct access to startup websites and social media pages.
 
-Follow these steps:
+### 🎨 Modern UI & UX
+- **Tailwind CSS** – A utility-first CSS framework for sleek, responsive designs.
+- **shadcn/ui Components** – High-quality UI elements built on Radix UI.
+- **Smooth Animations** – Enhanced user experience with fluid transitions.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🛠️ Technology Stack
 
-# Step 3: Install the necessary dependencies.
-npm i
+| Tech            | Description |
+|----------------|-------------|
+| **React**      | UI Library for building fast, interactive applications |
+| **TypeScript** | Type-safe JavaScript for robust development |
+| **React Router** | Client-side routing for seamless navigation |
+| **React Query** | Optimized data fetching and state management |
+| **Tailwind CSS** | Rapid UI development with a utility-first approach |
+| **Lucide React** | Beautiful open-source icons |
+| **React Markdown** | Render markdown for rich content support |
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+---
+
+## ⚡ Installation & Setup
+
+### 📌 Prerequisites
+- **Node.js** (v16+ recommended)
+- **npm** or **yarn** installed
+- **Backend API** running ([YC ATLAS Backend](https://github.com/piyushk6626/YC-ATLAS-Backend))
+
+### 🔧 Install Dependencies
+```bash
+# Clone the repository
+git clone https://github.com/piyushk6626/YC-ATLAS-Frontend.git
+cd YC-ATLAS-Frontend
+
+# Install dependencies
+npm install
 ```
 
-**Edit a file directly in GitHub**
+### 🔑 Environment Variables
+```bash
+cp .env.example .env
+# Configure your API URL in .env:
+# VITE_API_URL=http://localhost:8000
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### ▶️ Running the Application
+```bash
+npm run dev
+```
+🔹 App will be available at **http://localhost:5173**
 
-**Use GitHub Codespaces**
+### 🚀 Build for Production
+```bash
+npm run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### 🔄 Preview Production Build
+```bash
+npm run preview
+```
 
-## What technologies are used for this project?
+---
 
-This project is built with .
+## 📂 Project Structure
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+YC-ATLAS-Frontend/
+├── public/           # Static assets
+├── src/              # Source code
+│   ├── components/   # Reusable UI components
+│   │   └── ui/       # shadcn/ui components
+│   ├── hooks/        # Custom React hooks
+│   ├── pages/        # Page components
+│   ├── services/     # API service layer
+│   ├── types/        # TypeScript type definitions
+│   ├── App.tsx       # Main application component
+│   └── main.tsx      # Entry point
+├── tailwind.config.js # Tailwind configuration
+├── tsconfig.json     # TypeScript settings
+└── vite.config.ts    # Vite settings
+```
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/79e701f7-7aa0-460c-8101-c89cf40f07f1) and click on Share -> Publish.
+## 🔗 API Integration
 
-## I want to use a custom domain - is that possible?
+### 🏢 Search YC Startups
+```typescript
+import axios from 'axios';
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+const response = await axios.post(`${import.meta.env.VITE_API_URL}/search_companies`, {
+  query: "AI startups"
+});
+
+console.log(response.data);
+```
+
+### 🔎 Get Company Details
+```typescript
+const response = await axios.get(`${import.meta.env.VITE_API_URL}/company/company_id_here`);
+console.log(response.data);
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Follow these steps:
+1. **Fork the repository**
+2. **Create a feature branch** (`git checkout -b feature/your-feature`)
+3. **Commit your changes** (`git commit -m 'Add your feature'`)
+4. **Push to GitHub** (`git push origin feature/your-feature`)
+5. **Open a Pull Request**
+
+---
+
+## 🔗 Related Repositories
+
+- [YC-ATLAS Backend](https://github.com/piyushk6626/YC-ATLAS-Backend) - FastAPI backend powering the search
+- [YC-ATLAS Scraping](https://github.com/piyushk6626/YC-ATLAS-Scraping) - YC data collection & processing
+
+---
+
+## 📜 License
+
+YC ATLAS Frontend is licensed under the **MIT License** – see the LICENSE file for details.
+
+---
+
+## 📞 Contact & Support
+
+- **Creator:** [Piyush Kulkarni](https://github.com/piyushk6626)
+- **Website:** [codefatherai.webflow.io](https://codefatherai.webflow.io/)
+- **LinkedIn:** [piyush-kulkarni-ai](https://www.linkedin.com/in/piyush-kulkarni-ai/)
+
+---
+
+## 🌟 Why Use YC ATLAS?
+✅ **AI-Powered Search via YC ATLAS** – Find startups instantly.  
+✅ **All-in-One Search & Analysis Tool** – Discover YC companies in-depth.  
+✅ **SEO-Optimized** – Enhances discoverability of YC startups.  
+✅ **Modern UI & Performance** – Built with the latest frontend tech.  
+
+🚀 Try it now: **[YC ATLAS](https://yc-atlas.lovable.app/)**  
+
+🔗 **[Star This Repo on GitHub!](https://github.com/your-repo-link)** 🌟
+
