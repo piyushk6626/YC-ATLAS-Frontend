@@ -108,6 +108,9 @@ const Index = () => {
             <a href="https://github.com/piyushk6626/YCAtlas" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors">
               <Github className="w-5 h-5 mr-2" /> Backend Repository
             </a>
+            <a href="https://github.com/piyushk6626/YC-ATLAS-Scraping" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors">
+              <Github className="w-5 h-5 mr-2" /> Data & Scraping Tool
+            </a>
           </div>
         </div>
       </div>
