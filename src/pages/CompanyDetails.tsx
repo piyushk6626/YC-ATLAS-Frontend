@@ -10,13 +10,15 @@ import ReactMarkdown from 'react-markdown'; // Import ReactMarkdown for renderin
 
 const CompanyDetailsPage = () => {
   const { id } = useParams();
+  const { name } = useParams();
+    
   const [company, setCompany] = useState<CompanyDetailsType | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchCompanyDetails = async () => {
-      if (!id) return;
+      if (!name) return;
       
       try {
         setLoading(true);
@@ -35,7 +37,7 @@ const CompanyDetailsPage = () => {
     };
 
     fetchCompanyDetails();
-  }, [id, toast]);
+  }, [name, toast]);
 
   if (loading) {
     return (
