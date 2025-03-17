@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -169,9 +168,9 @@ const CompanyDetailsPage = () => {
                 {savingCompany ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
                 ) : isSaved ? (
-                  <Bookmark className="h-5 w-5 fill-current" title="Unsave company" />
+                  <Bookmark className="h-5 w-5 fill-current" aria-label="Unsave company" />
                 ) : (
-                  <BookmarkPlus className="h-5 w-5" title="Save company" />
+                  <BookmarkPlus className="h-5 w-5" aria-label="Save company" />
                 )}
               </Button>
               {company.website && (

@@ -1,105 +1,95 @@
-
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bookmark, BookmarkPlus, ExternalLink } from "lucide-react";
-import { Company } from '@/types/company';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from 'react-router-dom';
+import { Search as SearchIcon, Bookmark, BookmarkPlus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { searchCompanies, deepSearchCompanies } from '@/services/searchService';
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { getCompanies } from '@/services/companyService';
+import { Company } from '@/types/company';
 import { useAuth } from '@/contexts/AuthContext';
 import { saveCompany, unsaveCompany, isCompanySaved } from '@/services/savedCompanyService';
 
 const Search = () => {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState<Company[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [savedCompanies, setSavedCompanies] = useState<Record<string, boolean>>({});
-  const [savingCompany, setSavingCompany] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState<Company[]>([]);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { user, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [savedCompanies, setSavedCompanies] = useState<string[]>([]);
+  const [savingCompany, setSavingCompany] = useState(false);
+  const [companyToSave, setCompanyToSave] = useState<string | null>(null);
 
-  // Check which companies are saved
   useEffect(() => {
-    const checkSavedCompanies = async () => {
-      if (!user || results.length === 0) return;
-      
-      const savedStatus: Record<string, boolean> = {};
-      
-      // Process in batches to avoid too many concurrent requests
-      for (const company of results) {
+    const fetchSavedCompanies = async () => {
+      if (user) {
         try {
-          savedStatus[company.id] = await isCompanySaved(company.id);
+          const saved = await getCompanies();
+          setSavedCompanies(saved.map(company => company.id));
         } catch (error) {
-          console.error(`Error checking saved status for ${company.id}:`, error);
+          console.error("Error fetching saved companies:", error);
+          toast({
+            title: "Error",
+            description: "Failed to load saved companies.",
+            variant: "destructive"
+          });
         }
+      } else {
+        setSavedCompanies([]);
       }
-      
-      setSavedCompanies(savedStatus);
     };
 
-    checkSavedCompanies();
-  }, [results, user]);
+    fetchSavedCompanies();
+  }, [user, toast]);
 
-  // Redirect to login if not authenticated
-  if (!authLoading && !user) {
-    return <Navigate to="/auth" />;
-  }
-
-  const handleSearch = async (isDeepSearch: boolean) => {
-    if (!query.trim()) {
-      toast({
-        title: "Empty search query",
-        description: "Please enter a search term",
-        variant: "destructive"
-      });
-      return;
-    }
-    setIsLoading(true);
+  const handleSearch = async () => {
+    setLoading(true);
     try {
-      // Call the appropriate search function based on the search type
-      const searchResults = isDeepSearch ? await deepSearchCompanies(query) : await searchCompanies(query);
-      setResults(searchResults);
-      toast({
-        title: isDeepSearch ? "Deep Search Complete" : "Quick Search Complete",
-        description: `Found ${searchResults.length} results for "${query}"`
-      });
+      const results = await getCompanies(searchTerm);
+      setSearchResults(results);
     } catch (error) {
       console.error("Search error:", error);
       toast({
-        title: "Search Error",
-        description: "An error occurred while searching. Please try again.",
+        title: "Error",
+        description: "Failed to retrieve search results. Please try again.",
         variant: "destructive"
       });
+      setSearchResults([]);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleSaveCompany = async (companyId: string) => {
+  const isSaved = (companyId: string): boolean => {
+    return savedCompanies.includes(companyId);
+  };
+
+  const toggleSaveCompany = async (companyId: string) => {
     if (!user) {
-      navigate('/auth');
+      toast({
+        title: "Authentication Required",
+        description: "You must sign in to save companies.",
+      });
       return;
     }
 
-    setSavingCompany(companyId);
+    setSavingCompany(true);
+    setCompanyToSave(companyId);
     try {
-      if (savedCompanies[companyId]) {
+      if (isSaved(companyId)) {
         await unsaveCompany(companyId);
+        setSavedCompanies(savedCompanies.filter(id => id !== companyId));
         toast({
           title: "Company Unsaved",
           description: "The company has been removed from your saved list."
         });
-        setSavedCompanies(prev => ({ ...prev, [companyId]: false }));
       } else {
         await saveCompany(companyId);
+        setSavedCompanies([...savedCompanies, companyId]);
         toast({
           title: "Company Saved",
           description: "The company has been added to your saved list."
         });
-        setSavedCompanies(prev => ({ ...prev, [companyId]: true }));
       }
     } catch (error) {
       console.error("Error saving/unsaving company:", error);
@@ -109,117 +99,68 @@ const Search = () => {
         variant: "destructive"
       });
     } finally {
-      setSavingCompany(null);
+      setSavingCompany(false);
+      setCompanyToSave(null);
     }
-  };
-
-  // Function to get company logo path
-  const getLogoPath = (company: Company): string => {
-    const formattedName = company.metadata.name.replace(/\s+/g, '_');
-    return `data\\logos\\${formattedName}_logo.png`;
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="flex justify-end mb-4">
-          <Link to="/saved">
-            <Button variant="outline" className="mb-4">
-              <Bookmark className="mr-2 h-4 w-4" />
-              View Saved Companies
-            </Button>
-          </Link>
-        </div>
-        
-        <h1 className="text-3xl font-bold text-center mb-8">Company Search</h1>
-        
-        <div className="space-y-4">
-          <Input 
-            type="text" 
-            placeholder="Enter your search query..." 
-            value={query} 
-            onChange={e => setQuery(e.target.value)} 
-            className="w-full" 
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                handleSearch(false);
-              }
-            }}
-          />
-          
-          <div className="flex gap-4 justify-center">
-            <Button 
-              onClick={() => handleSearch(false)} 
-              disabled={isLoading} 
-              className="text-slate-50 bg-[#f26522]"
-            >
-              {isLoading ? "Searching..." : "Quick Search"}
-            </Button>
-            <Button 
-              variant="secondary" 
-              onClick={() => handleSearch(true)} 
-              disabled={isLoading}
-            >
-              {isLoading ? "Searching..." : "Deep Search"}
-            </Button>
-          </div>
-        </div>
+      <div className="flex items-center mb-6">
+        <Input
+          type="text"
+          placeholder="Search for companies..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="mr-4"
+        />
+        <Button onClick={handleSearch} disabled={loading}>
+          {loading ? (
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+          ) : (
+            <>
+              <SearchIcon className="mr-2 h-4 w-4" />
+              Search
+            </>
+          )}
+        </Button>
+      </div>
 
-        <div className="mt-8 space-y-4 max-h-[600px] overflow-y-auto rounded-lg p-1">
-          {results.length > 0 ? results.map(company => (
-            <Card key={company.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <div className="flex items-center">
-                  <img 
-                    src={getLogoPath(company)} 
-                    alt={`${company.metadata.name} logo`} 
-                    className="w-10 h-10 object-contain mr-3 rounded-md" 
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/placeholder.png';
-                    }}
-                  />
-                  <CardTitle className="text-xl font-semibold">
-                    {company.metadata.name}
-                  </CardTitle>
-                </div>
-                <div className="flex items-center">
+      {searchResults.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {searchResults.map((company) => (
+            <Card key={company.id}>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>{company.metadata.name}</CardTitle>
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => handleSaveCompany(company.id)}
-                    disabled={savingCompany === company.id}
-                    className="mr-2"
+                    onClick={() => toggleSaveCompany(company.id)}
+                    disabled={savingCompany && companyToSave !== company.id}
                   >
-                    {savingCompany === company.id ? (
+                    {savingCompany && companyToSave === company.id ? (
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
-                    ) : savedCompanies[company.id] ? (
-                      <Bookmark className="h-5 w-5 fill-current" title="Unsave company" />
+                    ) : isSaved(company.id) ? (
+                      <Bookmark className="h-5 w-5 fill-current" aria-label="Unsave company" />
                     ) : (
-                      <BookmarkPlus className="h-5 w-5" title="Save company" />
+                      <BookmarkPlus className="h-5 w-5" aria-label="Save company" />
                     )}
                   </Button>
-                  <Link 
-                    to={`/company/${encodeURIComponent(company.metadata.name)}`} 
-                    className="text-blue-500"
-                  >
-                    <ExternalLink className="h-5 w-5" />
-                  </Link>
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-500 mb-2">
-                  {company.metadata.location} • Founded {company.metadata.founded_date}
-                </p>
-                <p className="text-sm">{company.metadata.headline}</p>
+                <CardDescription>{company.metadata.headline}</CardDescription>
+                <Link to={`/company/${company.metadata.name}`} className="text-blue-500 hover:text-blue-700">
+                  View Details
+                </Link>
               </CardContent>
             </Card>
-          )) : (
-            <div className="text-center text-gray-500 py-8">
-              {isLoading ? "Searching for companies..." : "No results yet. Try searching for a company."}
-            </div>
-          )}
+          ))}
         </div>
-      </div>
+      ) : (
+        <p>No companies found. Please refine your search.</p>
+      )}
     </div>
   );
 };
