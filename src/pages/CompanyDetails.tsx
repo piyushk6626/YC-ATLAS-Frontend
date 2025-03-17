@@ -10,11 +10,13 @@ import ReactMarkdown from 'react-markdown'; // Import ReactMarkdown for renderin
 
 const CompanyDetailsPage = () => {
   const { id } = useParams();
-  const { name } = useParams();
+  
     
   const [company, setCompany] = useState<CompanyDetailsType | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+
+  const { name } = useParams();
 
   useEffect(() => {
     const fetchCompanyDetails = async () => {
@@ -22,7 +24,7 @@ const CompanyDetailsPage = () => {
       
       try {
         setLoading(true);
-        const data = await getCompanyDetails(id);
+        const data = await getCompanyDetails(name);
         setCompany(data);
       } catch (error) {
         console.error('Error fetching company details:', error);
@@ -35,10 +37,9 @@ const CompanyDetailsPage = () => {
         setLoading(false);
       }
     };
-
+  
     fetchCompanyDetails();
   }, [name, toast]);
-
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-16 flex justify-center">

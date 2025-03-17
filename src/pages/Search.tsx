@@ -77,7 +77,7 @@ const Search = () => {
         </div>
 
         <div className="mt-8 space-y-4 max-h-[600px] overflow-y-auto rounded-lg p-1">
-          {results.length > 0 ? results.map(company => <Link to={`/company/${formatCompanyIdForUrl(company.id)}`} target="_blank" rel="noopener noreferrer" key={company.id} className="block">
+          {results.length > 0 ? results.map(company => <Link to={`/company/${encodeURIComponent(company.metadata.name)}`} target="_blank" rel="noopener noreferrer" key={company.id} className="block">
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <div className="flex items-center">
