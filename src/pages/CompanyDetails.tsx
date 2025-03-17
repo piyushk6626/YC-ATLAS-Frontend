@@ -1,22 +1,25 @@
+
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ExternalLink, Linkedin, Twitter, Github } from "lucide-react";
+import { ArrowLeft, ExternalLink, Linkedin, Twitter, Github, Bookmark, BookmarkPlus } from "lucide-react";
 import { CompanyDetails as CompanyDetailsType } from '@/types/company';
 import { useToast } from "@/components/ui/use-toast";
 import { getCompanyDetails } from '@/services/companyService';
-import ReactMarkdown from 'react-markdown'; // Import ReactMarkdown for rendering markdown
+import ReactMarkdown from 'react-markdown';
+import { useAuth } from '@/contexts/AuthContext';
+import { saveCompany, unsaveCompany, isCompanySaved } from '@/services/savedCompanyService';
 
 const CompanyDetailsPage = () => {
-  const { id } = useParams();
-  
-    
+  const { name } = useParams();
   const [company, setCompany] = useState<CompanyDetailsType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSaved, setIsSaved] = useState(false);
+  const [savingCompany, setSavingCompany] = useState(false);
   const { toast } = useToast();
-
-  const { name } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCompanyDetails = async () => {
@@ -26,6 +29,12 @@ const CompanyDetailsPage = () => {
         setLoading(true);
         const data = await getCompanyDetails(name);
         setCompany(data);
+        
+        // Check if company is saved
+        if (user) {
+          const saved = await isCompanySaved(data.name);
+          setIsSaved(saved);
+        }
       } catch (error) {
         console.error('Error fetching company details:', error);
         toast({
@@ -39,7 +48,45 @@ const CompanyDetailsPage = () => {
     };
   
     fetchCompanyDetails();
-  }, [name, toast]);
+  }, [name, toast, user]);
+
+  const handleSaveCompany = async () => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+
+    if (!company) return;
+
+    setSavingCompany(true);
+    try {
+      if (isSaved) {
+        await unsaveCompany(company.name);
+        toast({
+          title: "Company Unsaved",
+          description: "The company has been removed from your saved list."
+        });
+        setIsSaved(false);
+      } else {
+        await saveCompany(company.name);
+        toast({
+          title: "Company Saved",
+          description: "The company has been added to your saved list."
+        });
+        setIsSaved(true);
+      }
+    } catch (error) {
+      console.error("Error saving/unsaving company:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save/unsave the company. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setSavingCompany(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-16 flex justify-center">
@@ -79,11 +126,17 @@ const CompanyDetailsPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-6">
+      <div className="mb-6 flex justify-between">
         <Link to="/">
           <Button variant="outline" size="sm">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
+          </Button>
+        </Link>
+        <Link to="/saved">
+          <Button variant="outline" size="sm">
+            <Bookmark className="mr-2 h-4 w-4" />
+            Saved Companies
           </Button>
         </Link>
       </div>
@@ -105,17 +158,34 @@ const CompanyDetailsPage = () => {
                 <CardDescription className="text-lg mt-1">{company.headline}</CardDescription>
               </div>
             </div>
-            {company.website && (
-              <a 
-                href={company.website} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center text-blue-500 hover:text-blue-700"
+            <div className="flex items-center">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={handleSaveCompany}
+                disabled={savingCompany}
+                className="mr-2"
               >
-                <span className="mr-1">Website</span>
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            )}
+                {savingCompany ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                ) : isSaved ? (
+                  <Bookmark className="h-5 w-5 fill-current" title="Unsave company" />
+                ) : (
+                  <BookmarkPlus className="h-5 w-5" title="Save company" />
+                )}
+              </Button>
+              {company.website && (
+                <a 
+                  href={company.website} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center text-blue-500 hover:text-blue-700"
+                >
+                  <span className="mr-1">Website</span>
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              )}
+            </div>
           </div>
         </CardHeader>
         
