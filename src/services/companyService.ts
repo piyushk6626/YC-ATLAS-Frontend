@@ -1,11 +1,66 @@
-import { CompanyDetails } from '@/types/company';
+
+import { CompanyDetails, Company } from '@/types/company';
+import { supabase } from '@/lib/supabase';
+
+export const getCompanies = async (searchTerm?: string): Promise<Company[]> => {
+  try {
+    let query = supabase.from('companies').select('*');
+    
+    if (searchTerm) {
+      query = query.ilike('name', `%${searchTerm}%`);
+    }
+    
+    const { data, error } = await query.limit(20);
+    
+    if (error) {
+      console.error('Error fetching companies:', error);
+      throw error;
+    }
+    
+    return data.map(company => ({
+      id: company.id,
+      metadata: {
+        name: company.name,
+        headline: company.headline || '',
+        website: company.website || '',
+        description: company.description || '',
+        location: company.location || '',
+        logo_path: company.logo_path || '',
+      }
+    }));
+  } catch (error) {
+    console.error('Error in getCompanies:', error);
+    throw error;
+  }
+};
 
 export const getCompanyDetails = async (name: string): Promise<CompanyDetails> => {
   try {
-    // Attempt to load the company data from the local file
+    // First try to fetch from Supabase
+    const { data, error } = await supabase
+      .from('companies')
+      .select('*, founders(*)')
+      .eq('name', name)
+      .single();
+    
+    if (data) {
+      return {
+        name: data.name,
+        headline: data.headline || '',
+        description: data.description || '',
+        website: data.website || '',
+        location: data.location || '',
+        founded_date: data.founded_date,
+        team_size: data.team_size,
+        founders: data.founders || [],
+        logo_path: data.logo_path || '',
+      };
+    }
+    
+    // Fallback to local file
     try {
       const companyData = await import(`../Data/Compay/${name}.json`);
-      
+      return companyData;
     } catch (localError) {
       console.error('Could not load local company data:', localError);
       
